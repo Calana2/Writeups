@@ -1,7 +1,7 @@
 # Natas4
 
 #### URL: http://natas4.natas.labs.overthewire.org
-#### Credentials: natas4:QryZXc2e0zahULdHrtHxzyYkj59kUxLQ
+#### Credenciales: natas4:QryZXc2e0zahULdHrtHxzyYkj59kUxLQ
 
 ![2025-03-19-174342_654x62_scrot](https://github.com/user-attachments/assets/182c4b7f-4e83-468c-81ec-d4247dea43a3)
 
