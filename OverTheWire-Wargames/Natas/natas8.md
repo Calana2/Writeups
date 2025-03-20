@@ -68,4 +68,4 @@ Input secret: <input name=secret><br>
 </html>
 ```
 
-`natas9:E1ck82lmdGIoErlhQgWND6j2Wzz6b6t`
+`natas9:ZE1ck82lmdGIoErlhQgWND6j2Wzz6b6t`
