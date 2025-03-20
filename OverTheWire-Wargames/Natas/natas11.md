@@ -4,6 +4,31 @@
 
 #### Credenciales: natas11:UJdqkK1pTu6VLt9UHWAgRZz6sVUZ3lEk
 
+La cookie que tenemos es un objeto con las propiedades "showpassword" y "bgcolor". Nuestro objetivo es que showpassword tenga el valor "yes". 
+
+Pero el objeto que contiene la cookie primero se convierte a JSON, luego se encripta con XOR y despues se codifica a base64:
+``` php
+function saveData($d) {
+    setcookie("data", base64_encode(xor_encrypt(json_encode($d))));
+}
+```
+
+Para la operacion XOR vemos que usan una clave que desconocemos:
+``` php
+function xor_encrypt($in) {
+    $key = '<censored>';
+    $text = $in;
+    $outText = '';
+
+    // Iterate through each character
+    for($i=0;$i<strlen($text);$i++) {
+    $outText .= $text[$i] ^ $key[$i % strlen($key)];
+    }
+
+    return $outText;
+}
+```
+
 Como la operacion XOR es reversible entonces si ciphertext = json_text ^ key, luego ciphertext ^ json_text = key. Presentamos esto en un script de python.
 
 ``` python
