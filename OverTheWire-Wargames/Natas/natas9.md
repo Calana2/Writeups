@@ -35,7 +35,7 @@ Podemos entonces introducir `;cat /etc/natas_webpass/natas9;` y obtener la contr
 
 ![2025-03-19-214107_610x234_scrot](https://github.com/user-attachments/assets/eb22175d-4712-4561-86b5-1b268dfd367d)
 
-`natas10:ZE1ck82lmdGIoErlhQgWND6j2Wzz6b6t`
+`natas10:t7I5VHvpa14sJTUGV0cbEsbYfFP2dmOu`
 
 
 
