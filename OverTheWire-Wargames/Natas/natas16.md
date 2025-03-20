@@ -62,6 +62,8 @@ for i in range(32):
 print(f"Final password: {passwd}")
 ```
 
-Ejecutando `python3 script.py` obtenemos
+Ejecutando `python3 script.py` obtenemos EqjHJbo7LFNb8vwhHb9s75hokh5TF0OC.
+
+`natas17:EqjHJbo7LFNb8vwhHb9s75hokh5TF0OC`
 
 
