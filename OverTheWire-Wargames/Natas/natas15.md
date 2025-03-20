@@ -46,7 +46,7 @@ for i in range(1,32+1):
         t.join()
     if found_char:
         passwd+=found_char
-        print(f"Caracter encontrado: {found_char} ----> {passwd}")
+        print(f"Found {found_char} ----> {passwd}")
     else:
         sys.exit(1)
 print(passwd)
@@ -56,3 +56,4 @@ Ejecutando este script con `python3 script.py` nos da como resultado hPkjKYviLQc
 
 `natas16:hPkjKYviLQctEW33QmuXL6eDVfMW4sGo`
 
+PD: Uso multiples hilos en caso de ser posible para que sea mas rapido el proceso.
