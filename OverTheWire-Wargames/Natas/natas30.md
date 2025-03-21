@@ -3,6 +3,13 @@
 #### URL: http://natas30.natas.labs.overthewire.org
 #### Credenciales: natas30:WQhx1BvcmP9irs2MP9tRnLsNaDI76YrH
 
+El método quote toma el valor obtenido y lo escapa adecuadamente para que sea seguro incluirlo en una consulta SQL:
+```perl
+my $query="Select * FROM users where username =".$dbh->quote(param('username')) . " and password =".$dbh->quote(param('password'));
+```
+
+Si se llama a quote() con una lista de valores, y el segundo valor es un entero, se puede hacer que quote() devuelva un valor sin comillas. En otras palabras, si se proporciona un array, se llamará a la segunda definición de quote() en lugar de la primera, que era la prevista:
+
 ``` python
 import requests
 from base64 import b64encode
@@ -45,5 +52,7 @@ win!<br>here is your result:<br>natas31m7bfjAHpJmSYgQWWeqRE2qVBuMiRNq0y<div id="
 ```
 
 `natas31:m7bfjAHpJmSYgQWWeqRE2qVBuMiRNq0y`
+
+PD: https://security.stackexchange.com/questions/175703/is-this-perl-database-connection-vulnerable-to-sql-injection/175872#175872
 
 
