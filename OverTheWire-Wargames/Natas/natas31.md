@@ -5,7 +5,7 @@
 
 En Perl hay una vulnerabilidad al subir archivos, y es que el operador <> no acepta cadenas a menos que sea ARGV, en cuyo caso iterará sobre los ARG pasados como argumentos y los insertara en una llamada a open()
 
-En resumen, RCE:
+En resumen, AFR:
 
 ![2025-03-21-153213_1366x768_scrot](https://github.com/user-attachments/assets/c2a47dbd-b87d-480b-b6d9-3baf828aa987)
 
