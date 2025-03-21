@@ -90,5 +90,7 @@ curl -u natas32:NaIWhW2VIrKqrc7aroJVHOZvk3RQMi0B -F file=ARGV -F file=@file.csv 
 
 `natas33:2v9nDlbSF7jvawaCncr5Z9kSzkmBeoCJ`
 
+PD: The Perl Jam 2 --> https://www.youtube.com/watch?v=BYl3-c2JSL8
+
 
 
