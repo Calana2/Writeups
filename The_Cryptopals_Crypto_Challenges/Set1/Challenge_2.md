@@ -6,7 +6,9 @@ XOR es una operacion bit a bit definida por la siguiente tabla de verdad:
 
 ![cpp-bitwise-xor-operator](https://github.com/user-attachments/assets/c8912f75-a88d-4a28-b8fd-63044149126a)
 
-Convertimos el texto en hexadecimal a bytes y realizamos la operacion XOR byte a byte
+Convertimos el texto en hexadecimal a bytes y realizamos la operacion XOR byte a byte porque el hardware trabaja con valores de 32 a 64 bits debido al tamaño de los registros
+
+---
 
 Solucion en Go:
 ``` go
