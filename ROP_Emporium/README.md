@@ -12,3 +12,5 @@ ROP Emporium es una serie de laboratorios para aprender Programacion Orientada a
 [Live Overflow](https://www.youtube.com/c/LiveOverflow)
 
 [CTF-101](https://ctf101.org/binary-exploitation/overview/)
+
+[Pwntools](https://docs.pwntools.com/en/dev/intro.html)
