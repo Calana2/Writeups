@@ -2,6 +2,10 @@
 
 ![2025-04-03-202444_1053x374_scrot](https://github.com/user-attachments/assets/dd203596-3a8c-4b37-9d8e-b17cdaf30a49)
 
+## Indice
+- [x86](x86)
+- [x86-64](#x86_64)
+
 # x86
 
 Lo primero que hacemos es revisar las propiedades del ejecutable. Hay varias utilidades para hacer esto (`checksec`,`rabin2`,`readelf`,etc...)
@@ -228,7 +232,7 @@ python3 ret2win32.py
     ROPE{a_placeholder_32byte_flag!}
 ```
 
-
+# x86_64
 
 
 
