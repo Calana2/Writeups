@@ -92,3 +92,7 @@ key='q': text=
 
 key='r': text=	(0g3/&3g3/"g7&53>g.4g-2*7.) M
 ```
+
+Solucion en python:
+``` python
+```
