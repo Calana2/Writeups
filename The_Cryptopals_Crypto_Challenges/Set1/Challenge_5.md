@@ -1,5 +1,7 @@
 # Implement repeating-key XOR
 
+![2025-04-08-204512_1020x347_scrot](https://github.com/user-attachments/assets/4e0e21b1-66b8-4061-a3d6-3f554557d87a)
+
 Creamos un programa que encripte el mensaje usando la clave "ICE"
 
 Solucion en Go:
