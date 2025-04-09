@@ -110,9 +110,10 @@ def XORBruteForceLine(line, linenum):
     print(f"\n======== LINE {linenum} ========\n")
     for l in output:
         print(l)
-
-f = open("4.txt","r")
-
-for n,l in enumerate(f.readlines()):
-    XORBruteForceLine(l,n)
+try:
+    with open("4.txt", "r") as f:
+        for n,l in enumerate(f.readlines()):
+            XORBruteForceLine(l,n)
+except FileNotFoundError:
+    print("Error: File not found.")
 ```
