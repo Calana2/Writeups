@@ -2,6 +2,7 @@
 
 ![2025-04-09-161339_1061x316_scrot](https://github.com/user-attachments/assets/bef2aee6-2f2a-4f0a-aba5-e0920d7c36a7)
 
+### Distancia de Hamming
 Primero debemos crear y probar una funcion que calcule la distancia de Hamming entre dos cadenas (la sumatoria del numero de bits diferentes entre cada par de bytes):
 ``` go
 package main
@@ -32,6 +33,7 @@ func main() {
 }
 ```
 
+### Obtener el mejor KEYSIZE
 Para los pasos 3 y 4:
 ``` go
 package main
@@ -107,4 +109,35 @@ Notese que num_blocks esta establecido a 10, porque al principio, si comparaba p
 
 A partir de comparar 10 pares de bloques hasta 30 se mantuvo `29` como el KEYSIZE definitivo
 
-#### Continuar
+### Crear bloques de KEYSIZE y transponerlos
+``` go
+
+	// Dividir el texto en KEYSIZE 29
+	var blocks [][]byte
+	for i := 0; i < len(data); i += best_keysize {
+		end := i + best_keysize
+		if end > len(data) {
+			end = len(data)
+		}
+		blocks = append(blocks, data[i:end])
+	}
+
+	// Transponer los bloques
+	var transposed [][]byte
+	for i := 0; i < best_keysize; i++ {
+		var newBlock []byte
+		for _, block := range blocks {
+			if i < len(block) {
+				newBlock = append(newBlock, block[i])
+			}
+		}
+		transposed = append(transposed, newBlock)
+         }
+```
+
+### Encontrando el mejor histograma para cada bloque
+
+Un histograma es lo mismo que un analisis de frecuencia de caracteres, debemos hacer una funcion que calcule una puntuacion basada en esa frecuencia para cada bloque:
+``` go
+
+```
