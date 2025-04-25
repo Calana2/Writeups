@@ -1,7 +1,6 @@
-# Stack 101, una introduccion a como funciona la pila en las arquitecturas x86 
+# x86 101: Introduccion General
 
-
-La Programacion Orientada al Retorno es una forma de explotar binarios manejando el flujo del programa y concatenando instrucciones mediante la entrada de usuario.
+#### Creditos de las imagenens a `flipthebit`
 
 ## Arquitectura x86
 
@@ -32,7 +31,7 @@ EIP: Puntero de instruccion, apunta a la siguiente instruccion a ejecutarse
 - `dword`, entero de 4 bytes
 - `quadword`, entero de 8 bytes
 
-#### Estructura de memoria de un program en Linux x86
+#### Estructura de memoria de un program ELF en x86
 - Memoria reservada para capturar errores de punteros nulos: `0x00000000 00000000` - **`0x00000000 00400000`**
 - Text: Codigo ejecutable
 - Data: Variables globales y estaticas inicializadas
@@ -42,8 +41,8 @@ EIP: Puntero de instruccion, apunta a la siguiente instruccion a ejecutarse
 - Stack (pila): Crece hacia direcciones bajas
 - Espacio del Kernel: `0xffff800000000000` y superiores, solo accesible para el kernel
   
- ![[2025-04-04-144222_358x551_scrot.png]]
-  
+![2025-04-04-144222_358x551_scrot](https://github.com/user-attachments/assets/a8052180-98da-4a85-b537-21af04c6c3ae)
+
 #### Memoria 
 
  Las direcciones de memoria son de 32 bits o 4 bytes, permitiendo asignar 2^32 bits = 4.29497e+09 / 1024 / 1024 = 4 gb de memoria.
@@ -54,7 +53,7 @@ EIP: Puntero de instruccion, apunta a la siguiente instruccion a ejecutarse
 
 La pila se compone de stack frames o `marcos de pila`, uno para cada procedimiento o funcion:
 
-![[2025-04-04-144236_911x545_scrot.png]]
+![2025-04-04-144236_911x545_scrot](https://github.com/user-attachments/assets/132960bf-f011-4282-b302-a6cc859786c1)
 
 En la arquitectura x86 la estructura de un stack frame es la siguiente (de la direccion mas alta a la mas baja):
 - Variables locales de la funcion
@@ -62,7 +61,7 @@ En la arquitectura x86 la estructura de un stack frame es la siguiente (de la di
 - Direccion de retorno
 - Parametros de la funcion
 
-![[2025-04-04-144247_704x539_scrot.png]]
+![2025-04-04-144247_704x539_scrot](https://github.com/user-attachments/assets/f972aef2-bf72-44fd-98c8-23974f660750)
 
 ### Alineacion de la pila
 
