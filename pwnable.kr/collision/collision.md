@@ -1,5 +1,7 @@
 # Collision
 
+![collision](https://github.com/user-attachments/assets/63626426-50a3-4c33-8b94-ef5b47304f84)
+
 El programa espera 20 bytes, los divide en grupos de 5 enteros de 4 bytes cada uno, los suma y compara el resultado con 0x21DD09EC, debemos pasar unos bytes que sumados den lo mismo:
 
 ```
