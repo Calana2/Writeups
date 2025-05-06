@@ -5,9 +5,7 @@
 
 Este es un buffer overflow clasico, necesitamos sobreescribir `key` para que la comparacion sea correcta, tambien en `readme` nos dicen que el programa esta corriendo en el puerto 9000 local, debemos explotarlo para encontrar la flag
 
-Si hacemos un breakpoint en `*func+63` veremos que el offset es de 56 bytes (32 del arreglo, 16 para alinear la pila, 4 de `ebp` y 4 de la direccion de retorno)
-
-*Nota: Los bytes reservados en las variables globales deben sumar un multiplo de 16 para compatibilidad con instrucciones multimedia, en este caso 32 bytes se hace crecer hasta 48 bytes*
+Si hacemos un breakpoint en `*func+63` veremos que el offset es de 56 bytes (32 del arreglo, 16 que reserva el compilador, 4 de `ebp` y 4 de la direccion de retorno)
 
 ![2025-05-05-234246_929x529_scrot](https://github.com/user-attachments/assets/0d0c1380-9d62-4f5c-93cb-4b5b53f3a097)
 
