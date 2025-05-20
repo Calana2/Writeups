@@ -84,7 +84,7 @@ Se añaden los registros r8,r9,r10,r11,r12,r13,r14,r15 de 64 bits con sus respec
  
 ### Marco de pila
 
-Los parametros del procedimento no son pasados mediante el stack, sino mediante registros, normalmente en el siguiente orden: rdi, rsi, rdx, rcx, r8, y r9. 
+Los parametros del procedimento son pasados en dependencia de la ABI(Application Binary Interface) en uso. GNU/Linux usa System V AMD64 ABI, o sea, los 6 primeros parametros de funcion se pasan mediante rdi, rsi, rdx, rcx, r8, y r9 y el resto mediante el stack.
 
 Aunque ahora se puede usar RSP con desplazamiento y prescindir de EBP, este se sigue usando porque hace mas sencilla la depuracion.
  
