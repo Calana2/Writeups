@@ -1,6 +1,6 @@
 # x86 101: Introduccion General
 
-#### Creditos de las imagenens a `flipthebit`
+#### Creditos de las imagenes a `flipthebit`
 
 ## Arquitectura x86
 
