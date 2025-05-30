@@ -2,6 +2,8 @@
 
 ## x86
 
+![2025-05-30-195441_977x295_scrot](https://github.com/user-attachments/assets/7c0bbc01-b019-48c2-ba22-b86b5ede3a71)
+
 En este reto debemos llamar a `print_file` con un puntero a "flag.txt" como argumento. Pero esa cadena no existe en el binario asi que tendremos que escribirla.
 
 La descripcion nos da una pista de gadgets que podriamos usar. Con ROPGadget extraje estos:
