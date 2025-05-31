@@ -6,6 +6,15 @@ URL: https://ropemporium.com/
 
 ROP Emporium es una serie de laboratorios para aprender Programacion Orientada al Retorno en diferentes arquitecturas
 
+### Retos
+1. ret2win
+2. split
+3. callme
+4. write4
+5. badchars
+6. fluff
+7. pivot
+8. ret2csu
 
 ### Recursos recomendados
 
