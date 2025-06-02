@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# I truly overcomplicated this because I didn't use some "usefulGadgets"
 from pwn import *
 
 elf = ELF("./pivot32")
