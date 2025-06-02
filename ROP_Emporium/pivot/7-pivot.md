@@ -9,3 +9,5 @@ Estaba terminando de escribir la explicacion para esta arquitectura pero mi escr
 Espero haber dejado bien detallado el script.
 
 # x86_64
+
+Correccion: los scripts.
