@@ -76,7 +76,7 @@ En la arquitectura x86_64 tenemos 16 registros de proposito general, 6 registros
 
 Los registros EAX,EBX,ECX,EDX,ESP,EBP,ESI,EDI  asi como el resto de registros fueron extendidos a 64 bits de almacenamiento, y su version completa cuenta con una R al inicio del nombre, por ejemplo: EAX (32 bits) --> RAX (64 bits) mientras EAX sigue siendo accesible como parte baja de EAX.
 
-Se añaden los registros r8,r9,r10,r11,r12,r13,r14,r15 de 64 bits con sus respectivas partes bajas de 32 bits (r8d), parte alta de 16 bits (r8w) y parte baja de 8 bits (r8b). Los prefijos hacen referencia al tamaño de los valores, `d`ouble, `w`ord y `b`yte.
+Se añaden los registros r8,r9,r10,r11,r12,r13,r14,r15 de 64 bits con sus respectivas partes bajas de 32 bits (r8d), parte baja de 16 bits (r8w) y parte baja de 8 bits (r8b). Los prefijos hacen referencia al tamaño de los valores, `d`ouble, `w`ord y `b`yte.
 
 ### Memoria
 
