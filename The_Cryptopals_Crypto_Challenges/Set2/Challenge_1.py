@@ -1,6 +1,6 @@
 def pkcs7_pad(chunk: bytes, block_size: int):
     if len(chunk) > block_size:
-        return b""
+        raise ValueError("Chunk demasiado grande.")
     plen = block_size - (len(chunk) % block_size)
     pad = bytes([plen] * plen)
     return chunk + pad
