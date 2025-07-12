@@ -22,19 +22,29 @@ Pero algunos binarios pueden seguir usando ASLR si fueron compilados con relocac
 | -z execstack	| Permite ejecutar código en la pila (stack ejecutable) |
 | -fno-stack-protector | Desactiva los canarios que detectan desbordamientos |
 
-## ASLR, DEP y Stack Cookies en MinGW
+## ASLR, DEP y Stack Cookies en MinGW (i686-w64-mingw32-gcc & x86_64-w64-mingw32-gcc)
 - **En MinGW, los binarios no son PIE por defecto**
 - **En Windows, el formato PE permite que el sistema reubique el binario incluso si no fue compilado como PIE, gracias a la tabla de relocaciones que se incluye por defecto**
 
 | Flag | Significado |
 | ----- | ----------- |
-| -Wl,--dynamicbase:no | Desactiva ASLR para el binario |
-| -Wl,--nxcompat:no | Permite que la pila sea ejecutable |
+| -Wl,--disable-dynamicbase | Desactiva ASLR para el binario |
+| -Wl,--disable-nxcompat| Permite que la pila sea ejecutable |
 | -fno-stack-protector | Desactiva los canarios que detectan desbordamientos |
 
 ## Compilar como codigo de 32bits/i386 en sistemas de 64 bits
 | Compilador | Flag |
 | ---------- | ---- |
 | gcc | -m32 |
+
+## Revisar protecciones de binarios en Linux
+readelf:
+- NX/DEP:                 `readelf -l a.out | grep -A 1 GNU_STACK`
+- PIE/PIC:                `readelf -h a.out | grep -E "Type|Tipo"`
+- stack canaries/cookies: `readelf -s a.out | grep -E '__stack_chk_fail|__stack_chk_guard'`
+
+checksec:
+`checksec --file=a.out`
+
 
 
