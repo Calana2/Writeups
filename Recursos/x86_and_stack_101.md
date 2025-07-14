@@ -49,7 +49,7 @@ EIP: Puntero de instruccion, apunta a la siguiente instruccion a ejecutarse
 
  Cada programa cree que tiene acceso a toda la memoria del sistema, desde 0x00000000 hasta 0xffffffff, a esto se le llama `memoria virtual` o `espacio de direcciones virtual`, el sistema operativo controla esto mediante `tablas de paginas` que traduce direcciones virtuales en fisicas.
 
-### Marco de pila
+### Marco de pila y convencion de llamadas
 
 La pila se compone de stack frames o `marcos de pila`, uno para cada procedimiento o funcion:
 
@@ -62,6 +62,13 @@ En la arquitectura x86 la estructura de un stack frame es la siguiente (de la di
 - Parametros de la funcion
 
 ![2025-04-04-144247_704x539_scrot](https://github.com/user-attachments/assets/f972aef2-bf72-44fd-98c8-23974f660750)
+
+Se le llama `caller` a la funcion invocadora y `callee` a la funcion invocada.
+
+En Linux el `caller` se encarga tanto de reservar espacio en el stack como limpiar la pila una vez termine el `callee` (convencion `cdecl`)
+
+En Windows el `callee` limpia la pila (convencion `stdcall`)
+
 
 ### Alineacion de la pila
 
@@ -82,14 +89,19 @@ Se añaden los registros r8,r9,r10,r11,r12,r13,r14,r15 de 64 bits con sus respec
 
  Las direcciones de memoria son de 64 bits u 8 bytes, permitiendo asignar 2^64 bits = 256 TB teoricamente. Normalmente se usan direcciones de memoria de 48 bits porque es suficiente.
  
-### Marco de pila
+### Marco de pila y convencion de llamadas
 
-Los parametros del procedimento son pasados en dependencia de la ABI(Application Binary Interface) en uso. GNU/Linux usa System V AMD64 ABI, o sea, los 6 primeros parametros de funcion se pasan mediante rdi, rsi, rdx, rcx, r8, y r9 y el resto mediante el stack.
+Los parametros del procedimento son pasados en dependencia de la ABI(Application Binary Interface) en uso. 
+
+GNU/Linux usa System V AMD64 ABI, o sea, los 6 primeros parametros de funcion se pasan mediante rdi, rsi, rdx, rcx, r8, y r9, y el resto mediante el stack. El caller sigue encargandose de la limpieza de la pila igual.
+
+Windows usa su propia ABI x64 donde los 4 primeros parametros de funcion se pasan mediante los registros rcx, rdx, r8 y r9, y el resto mediante el stack. Entre llamadas a función existen los registros volatiles (los que cambian durante la llamada) y los no volatiles (el destinatario de la llamada debe conservarlo). La API de Windows usa la nueva convencion `fastcall`, donde el callee limpia igual pero ahora se exige al caller a reservar un espacio fijo de 32 bytes llamado "shadow space".
 
 Aunque ahora se puede usar RSP con desplazamiento y prescindir de EBP, este se sigue usando porque hace mas sencilla la depuracion.
- 
+
+
 ### Alineacion de la pila
 
-La pila debe estar alineada a 16 bytes antes de una llamada a funcion porque instrucciones extendidas requieren datos alineados a 16/32 bytes y esto mejora el rendimiento en los accesos a memoria
+La pila debe estar alineada a 16 bytes antes de una llamada a funcion porque instrucciones extendidas requieren datos alineados a 16/32 bytes y esto mejora el rendimiento en los accesos a memoria.
 
-Se debe cumplir que: `(RSP - 8) % 16 == 0`
+El caller debe alinear el stack antes de la llamada. Se debe cumplir que: `(RSP - 8) % 16 == 0`
