@@ -1,20 +1,13 @@
 #!/bin/python3
 from pwn import *
-# set terminal gdb will run in
-# replace 'tmux' with your terminal
-context.terminal = ['tmux', 'splitw', '-hp', '70']
 
-# create payload
-payload = cyclic(60, n=4)
+p = process("./process")
 
-# debug rop chain
-io = gdb.debug('./filename', '''
-               b func
-               c
-               ''')
-# `continue` to see the crash
-# `cyclic -l 0xvalue_at_the_top_of_the_stack -n 4`
-io.sendline(payload)
+# Once you find the 4-byte pattern at ESP/RSP
+# offset = cyclic_find("kaaa")
 
-# keep the program alive
-io.interactive()
+raw_input("attach gdb")
+p.sendline(cyclic(500))
+p.interactive()
+
+# There are more elegant ways
