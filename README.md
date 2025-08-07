@@ -7,7 +7,7 @@ Publicación de soluciones o writeups de retos de ciberseguridad en español.
 - [Protostar](https://github.com/Calana2/Writeups/tree/main/Protostar)
 
 ## Reverse
-- [The Flare-On Challenge](https://github.com/Calana2/Writeups/tree/main/flare-on)
+- [crackmes.one](https://github.com/Calana2/Writeups/tree/main/crackmes.one)
   
 ## Crypto
 - [The Cryptopals Crypto Challenges](https://github.com/Calana2/Writeups/tree/main/The_Cryptopals_Crypto_Challenges)
