@@ -12,6 +12,8 @@ Publicación de soluciones o writeups de retos de ciberseguridad en español.
 ## Crypto
 - [The Cryptopals Crypto Challenges](https://github.com/Calana2/Writeups/tree/main/The_Cryptopals_Crypto_Challenges)
 
+## Web
+- [OverTheWire - Natas](https://github.com/Calana2/Writeups/tree/main/OverTheWire-Wargames/Natas)
+
 ## Shell
-- [OverTheWire](https://github.com/Calana2/Writeups/tree/main/OverTheWire-Wargames)
 - [UnderTheWire](https://github.com/Calana2/Writeups/tree/main/UnderTheWire-Wargames)
