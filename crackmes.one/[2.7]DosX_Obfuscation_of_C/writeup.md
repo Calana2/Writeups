@@ -1,4 +1,4 @@
-Empezando el programa esta empaquetado con UPX pero ofuscado:
+Empezando, el programa esta empaquetado con UPX pero ofuscado:
 
 ### Intro
 ```
@@ -41,7 +41,7 @@ Hace varias cosas. Pude revertir todas excepto una, que era reemplazar el numero
 
 Afortunadamente todos estos empaquetadores pueden ser derrotados por un depurador.
 
-Hay que tener en cuenta que el programa usa tecnicas anti-debugging asi que debemos hacer que el depurador NO cambie `1` el valor del campo `BeingDebugged` en el PEB.
+Hay que tener en cuenta que el programa usa tecnicas anti-debugging asi que debemos hacer que el depurador NO cambie a `1` el valor del campo `BeingDebugged` en el PEB.
 
 En `x96dbg` podemos hacer esto yendo a "Depurar/Advanced/Ocultar el depurador (PEB)"  o usando el plugin ScyllaHide:
 
@@ -49,7 +49,7 @@ En `x96dbg` podemos hacer esto yendo a "Depurar/Advanced/Ocultar el depurador (P
 Nota: La foto muestra `x64dbg`, este programa especifico hay que depurarlo en `x32dbg`.
 
 ### Tail Jump
-Los empaquetadores suelen tener algo que se llama "tail jump", que es un salto al final de la rutina que desempaca el programa hacia el EntryPoint del programa real. En el mod grafico se ve mas claro.
+Los empaquetadores suelen tener algo que se llama "tail jump", que es un salto al final de la rutina que desempaca el programa hacia el Entry Point del programa real. En el mod grafico se ve mas claro.
 
 <img width="1024" height="768" alt="chall2" src="https://github.com/user-attachments/assets/6d6c129e-ec96-4579-8424-358704b83811" />
 
@@ -61,7 +61,7 @@ Si seguimos los pasos perfectamente detallados en [este video](https://www.youtu
 
 <img width="445" height="244" alt="2025-08-08-182938_445x244_scrot" src="https://github.com/user-attachments/assets/5beca8fe-5392-41d4-abf2-d59d1ab8be40" />
 
-En la stack frame de la funcion *FUN_0040248*, \[EBP - 0x24\](_Buf) contiene la entrada de usuario. Luego se hace un strncmp(_Buf,"FLAG{\0",5) y al final se comparan los elementos con indice 5,6,7,8,9,10,11 con los caracteres 'a','(','#','3','_','}','\0' respectivamente.
+En el stack frame de la funcion *FUN_0040248*, \[EBP - 0x24\](_Buf) contiene la entrada de usuario. Luego se hace un strncmp(_Buf,"FLAG{\0",5) y al final se comparan los elementos con indice 5,6,7,8,9,10,11 con los caracteres 'a','(','#','3','_','}','\0' respectivamente.
 
 Contraseña: `FLAG{a(#3_}`
 
