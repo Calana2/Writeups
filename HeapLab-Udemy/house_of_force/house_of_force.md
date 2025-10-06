@@ -16,7 +16,7 @@ Este reto presentaba una introducción a la técnica homónima introducida en el
 La solucion es sencilla, dado que hay un heap overflow y contamos con glibc = 2.27 no hay verificacion de integridad del top chunk y tenemos los llamados "malloc hooks" para redirigir la ejecucion a pesar de que la GOT es de solo lectura.
 
 Pasos:
-1. Calculamos las direcciones de libc base y del top chunk con los leaks que nos brindan,
+1. Calculamos las direcciones de libc base y del top chunk con los leaks que nos brindan.
 2. Reservamos un primer chunk y sobreescribimos el campo `size` del top chunk a `0xffffffffffffffff` (-1).
 3. Reservamos un segundo chunk de tamaño `target_addr - top_chunk_addr - 0x20` --- siendo target_addr la direccion de `__malloc_hook` --- para posicionar el top chunk en nuestra direccion objetivo.
 ```
