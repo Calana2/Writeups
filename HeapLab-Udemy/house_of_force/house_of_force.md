@@ -32,6 +32,8 @@ Pasos:
 5. Reservamos un tercer chunk --- cuyo campo de datos se encuentra en `__malloc_hook` --- y sobreescribimos la direccion del puntero con la direccion de `system`.
 6. Reservamos un cuarto chunk con tamaño `binsh_addr`, provocando malloc(binsh_addr) =>  system("/bin/sh").
 
+## Exploit
+
 ```py
 from pwn import *
 r = process("./house_of_force")
