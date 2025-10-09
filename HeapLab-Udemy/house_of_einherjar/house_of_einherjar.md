@@ -1,4 +1,14 @@
 # House of Einherjar
+```
+    Arch:       amd64-64-little
+    RELRO:      Full RELRO
+    Stack:      Canary found
+    NX:         NX enabled
+    PIE:        No PIE (0x400000)
+    RUNPATH:    b'../.glibc/glibc_2.28_no-tcache'
+    Stripped:   No
+    Debuginfo:  Yes
+```
 
 Si existe la posibilidad de obtener una shell en este reto la desconozco. El objetivo de este reto fue sobreescribir la variable global `target`.
 
