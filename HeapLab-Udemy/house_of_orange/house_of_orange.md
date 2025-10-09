@@ -14,22 +14,33 @@ Tal y como en `House of Force` hay un heap overflow que nos permite sobreescribi
 
 Pasos:
 1. Hacemos un "alloc (small)" y sobreescribimos con el overflow en este chunk en campo size del top chunk para que contenga un valor menor al espacio solicitado en un "alloc (large)". El nuevo tamaño que usamos, `0xfe01`, cumple ciertas condiciones necesarias:
-  + ((unsigned long) (old_size) >= MINSIZE &&                    (Debe ser al menos 0x20 bytes)
-  +  prev_inuse (old_top) &&                                      (Debe tener el byte PREV_INUSE activo)
-  + ((unsigned long) old_end & (pagesize - 1)) == 0)'            (La direccion de top_chunk + size debe estar alineado a la pagina, (top_chunkaddr + size) & 0xfff == 0
+
+    |                                                              |                                      |                  
+    |--------------------------------------------------------------|--------------------------------------|
+    | ((unsigned long) (old_size) >= MINSIZE                       | Debe ser al menos 0x20 bytes         |
+    |  prev_inuse (old_top)                                        | Debe tener el byte PREV_INUSE activo |
+    | ((unsigned long) old_end & (pagesize - 1)) == 0              | La direccion de top_chunk + size debe estar alineado a la pagina: (top_chunkaddr + size) & 0xfff == 0) |
+
 2. Hacemos un "alloc (large)". Esto provoca que el top chunk se libere y vaya a `unsortedbin`.
 3. Sobreescribimos de nuevo el top chunk:
   + Cambiamos su campo size a 0x61.
   + Cambiamos su campo bk a `_IO_list_all` - 0x10.
   + Creamos una estructura _IO_FILE_plus falsa con algunos valores especificos:
-      + top chunk                               # "/bin/sh\x00"
-      + top chunk + 0x08                        # 0x61
-      + top chunk + 0x18                        # _IO_list_all - 0x10
-      + top chunk + 0x20                        # campo _IO_write_base = 2
-      + top chunk + 0x28                        # campo _IO_write_ptr = 3
-      + top chunk + 0x68, 0x70, 0x78, 0x80      # sobreescribir estos con falsas entradas de una vtable, en 0x80 colocamos la direccion de `system`
-      + top chunk + 0xc0                        # campo _mode = 0
-      + top chunk + 0xd0                        # campo vtable = top chunk + 0x68
+
+| Dirección relativa             | Descripción                                                                 |
+|-------------------------------|------------------------------------------------------------------------------|
+| top chunk                     | Cadena "/bin/sh\x00"                                                        |
+| top chunk + 0x08              | Valor 0x61                                                                  |
+| top chunk + 0x18              | Dirección de `_IO_list_all - 0x10`                                          |
+| top chunk + 0x20              | Campo `_IO_write_base = 2`                                                  |
+| top chunk + 0x28              | Campo `_IO_write_ptr = 3`                                                   |
+| top chunk + 0x68              | Entrada falsa de vtable                                                     |
+| top chunk + 0x70              | Entrada falsa de vtable                                                     |
+| top chunk + 0x78              | Entrada falsa de vtable                                                     |
+| top chunk + 0x80              | Dirección de `system`                                                       |
+| top chunk + 0xc0              | Campo `_mode = 0`                                                            |
+| top chunk + 0xd0              | Campo `vtable = top chunk + 0x68`                                           |
+
 4. Hacemos un "alloc (small)" que realiza varias cosas:
   + Dado que hay un chunk en `unsortedbin` y se reserva un chunk pequeño malloc intenta moverlo a una `smallbin`, especificamente a `smallbin[4]`, que contiene los chunks de tamaño 0x5a-0x62 bytes.
   + Al llamar a `unlink_chunk` en `unsortedbin`: `p->bk->fd = p->fd` o lo que es lo mismo `_IO_list_all - 0x10 + 0x10 = main_arena + 88`. 
