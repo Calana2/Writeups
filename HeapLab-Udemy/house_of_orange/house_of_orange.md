@@ -43,7 +43,7 @@ Pasos:
 
 4. Hacemos un "alloc (small)" que realiza varias cosas:
   + Dado que hay un chunk en `unsortedbin` y se reserva un chunk pequeño malloc intenta moverlo a una `smallbin`, especificamente a `smallbin[4]`, que contiene los chunks de tamaño 0x5a-0x62 bytes.
-  + Al llamar a `unlink_chunk` en `unsortedbin`: `p->bk->fd = p->fd` o lo que es lo mismo `_IO_list_all - 0x10 + 0x10 = main_arena + 88`. 
+  + Al ocurrir el *unlinking* parcial en `unsortedbin`: `p->bk->fd = p->fd` o lo que es lo mismo `_IO_list_all - 0x10 + 0x10 = main_arena + 88`. 
   ```
   /* Cabe destacar que p->fd puede contener cualquier cosa porque cuando malloc intenta satisfacer una solicitud dividiendo
      este chunk libre el valor en chunk->bk->fd se sobrescribe con la dirección de la unsortedbin */
