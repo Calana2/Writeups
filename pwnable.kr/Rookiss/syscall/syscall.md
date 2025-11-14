@@ -82,7 +82,7 @@ LLamando a `commit_creds(prepare_kernel_cred(0))` se pueden ganar privilegios de
 - `prepare_kernel_cred(uint id)` devuelve un puntero a una estructura `cred` que contiene las credenciales para una nueva tarea. El parametro `0` es el ID de root.
 - `commit_creds(struct cred *new)` actualiza las credenciales de la tarea actual con las nuevas credenciales proporcionadas. 
 
-Con `proc/kallsyms` podemos observar los simbolos del kernel y sus direcciones de memoria. Por lo visto tenemos permiso de lectura:
+Con `/proc/kallsyms` podemos observar los simbolos del kernel y sus direcciones de memoria. Por lo visto tenemos permiso de lectura:
 ```
 / $ ls -l /proc/kallsyms
 -r--r--r--    1 0        0                0 Aug 29 22:49 /proc/kallsyms
@@ -129,8 +129,4 @@ int main(){
 ```
 
 `Must_san1tize_Us3r_p0int3r`
-
-
-
-
 
