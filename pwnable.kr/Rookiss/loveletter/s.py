@@ -5,8 +5,8 @@ elf = ELF("./loveletter")
 #libc = ELF("./")
 #ld = ELF("./")
 
-contpayloadt.binary = elf
-contpayloadt.terminal = ['tmux', 'splitw', '-hp', '70']
+context.binary = elf
+context.terminal = ['tmux', 'splitw', '-hp', '70']
 #contpayloadt.log_level = "debug"
 gs = '''
 break main
